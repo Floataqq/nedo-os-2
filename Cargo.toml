@@ -1,6 +1,5 @@
-[package]
-name = "nedo_os_2"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
+[workspace]
+members = [
+  "nedo_os_2",
+  "xtask"
+]

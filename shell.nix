@@ -1,6 +1,9 @@
 { pkgs ? import <nixpkgs> {} }:
   pkgs.mkShell {
   packages = with pkgs; [
-    cargo
+    rustup
+    grub2
+    qemu_full
+    libisoburn
   ];
 }
