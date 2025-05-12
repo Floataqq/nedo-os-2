@@ -1,6 +1,12 @@
+cargo-features = ["profile-rustflags"]
+
 [package]
 name = "nedo_os_2"
 version = "0.1.0"
 edition = "2024"
 
+[profile.release]
+rustflags = ["-C", "link-dead-code"]
+
 [dependencies]
+
