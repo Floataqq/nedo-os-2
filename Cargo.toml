@@ -1,6 +1,8 @@
 [workspace]
-members = [
+members = [ 
+  "boot",
   "nedo_os_2",
   "xtask"
 ]
+resolver = "3"
 

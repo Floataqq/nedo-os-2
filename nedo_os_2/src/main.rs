@@ -2,7 +2,6 @@
 #![no_main]
 
 pub mod asm_wrappers;
-pub mod boot;
 
 use core::panic::PanicInfo;
 

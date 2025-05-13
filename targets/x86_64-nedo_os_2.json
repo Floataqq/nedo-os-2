@@ -10,7 +10,7 @@
 	"linker-flavor": "ld.lld",
 	"linker": "rust-lld",
 	"pre-link-args": {
-		"ld.lld": ["-Tlinker.ld"]
+		"ld.lld": ["-n", "-Tnedo_os_2/linker.ld"]
 	},
 	"panic-strategy": "abort",
 	"disable-redzone": true,

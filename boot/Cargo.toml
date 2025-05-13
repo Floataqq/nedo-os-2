@@ -1,7 +1,6 @@
 [package]
-name = "nedo_os_2"
+name = "boot"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-
