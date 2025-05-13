@@ -15,6 +15,7 @@
 	"target-endian": "little",
 	"panic-strategy": "abort",
   "pre-link-args": {
+    "ld.lld": ["-Tboot/linker.ld"]
   },
 	"os": "none",
 	"vendor": "unknown",
