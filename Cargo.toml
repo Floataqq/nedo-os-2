@@ -1,6 +1,5 @@
 [workspace]
 members = [ 
-  "boot",
   "nedo_os_2",
   "xtask"
 ]
