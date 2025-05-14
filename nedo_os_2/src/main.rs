@@ -13,10 +13,10 @@ fn kernel_main() {}
 #[panic_handler]
 fn panic_handler(_info: &PanicInfo) -> ! {
     let mut w = Writer::new();
-    write!(w, "Kernel panic at ");
+    write!(w, "Kernel panic at ").unwrap();
     match _info.location() {
         Some(l) => write!(w, "({}, {})", l.line(), l.column()),
         None => writeln!(w, "an unknown loc"),
-    };
+    }.unwrap();
     loop {}
 }

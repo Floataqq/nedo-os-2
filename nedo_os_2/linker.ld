@@ -18,7 +18,7 @@ SECTIONS
 
     .bss :
     {
-      *(.bss .bss.*)
+      KEEP(*(.bss .bss.*))
     }
 }
 

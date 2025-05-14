@@ -4,9 +4,12 @@
 use core::fmt::Write;
 use core::fmt::Result;
 use core::mem::transmute;
+use spin::Mutex;
+use lazy_static::lazy_static;
 
 /// 4-bit representation of the color. The "bright" 
 /// background colors make text blink
+#[derive(Debug)]
 #[repr(u8)]
 pub enum Color {
     Black = 0,
@@ -30,7 +33,7 @@ pub enum Color {
 /// A struct to hold background and foreground color
 #[derive(Clone, Copy, Debug)]
 #[repr(transparent)]
-struct ColorInfo(u8);
+pub struct ColorInfo(u8);
 
 impl Default for ColorInfo {
     fn default() -> Self {
@@ -92,10 +95,8 @@ impl Character {
 const VGA_BUFFER_START: usize = 0xb8000;
 const BUFFER_WIDTH: usize = 80;
 const BUFFER_HEIGHT: usize = 25;
-struct Buffer {
-    chars: [[Character; BUFFER_WIDTH]; BUFFER_HEIGHT]
-}
 
+#[derive(Debug, Clone)]
 pub struct Writer {
     /// The first line that has free characters
     pub line: usize,
@@ -143,9 +144,33 @@ impl Writer {
 
 impl Write for Writer {
     fn write_str(&mut self, s: &str) -> Result {    
-        for x in s.bytes() {
-            self.write_byte(x);
+        for x in s.as_bytes() {
+            self.write_byte(*x);
         }
         Ok(())
     }
 }
+
+/// A global writer instance for `print` and `println`
+lazy_static! {
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer::new());
+}
+
+/// just like `print`, but uses the VGA buffer
+#[macro_export]
+macro_rules! vga_print {
+    ($($arg:tt)*) => {
+        use core::fmt::Write;
+        write!(*$crate::vga_buffer::WRITER.lock(), $($arg)*)
+    };
+}
+
+/// just like `println`, but uses the VGA buffer
+#[macro_export]
+macro_rules! vga_println {
+    ($($arg:tt)*) => {
+        vga_print!($($arg)*, "\n")
+    };
+}
+
+

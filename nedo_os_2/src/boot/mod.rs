@@ -2,11 +2,11 @@
 //! Also houses all the temporary infastructure (e.g. the stack)
 //! used to get to `kernel_main`
 
+use core::fmt::Write;
 use core::mem::size_of;
 use core::arch::asm;
 use libnedo::multiboot2::MultibootHeader;
-
-pub mod long_mode_init;
+use libnedo::vga_buffer::Writer;
 
 /// The multiboot header that the kernel uses for things
 #[used]
@@ -26,25 +26,25 @@ static MULTIBOOT_HEADER: MultibootHeader = MultibootHeader {
 /// Temporary 4096 byte stack for all the initial routines
 #[used]
 #[unsafe(link_section = ".bss")]
-static mut STACK: [u8; 4096] = [0; 4096];
+static mut STACK: [u8; 4096] = [b'A'; 4096];
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
     // need to do this as soon as possible
     // before the compiler tries to do anything
-    // TODO: everything somehow works without it,
-    // gotta research
-    /*
     unsafe {
         let stack_top = (&raw const STACK) as usize;
-        asm!("mov esp, edi", in ("edi") stack_top);
+        asm!("mov rsp, rdi", in ("rdi") stack_top);
+        asm!("mov rbp, rdi", in ("rdi") stack_top);
     }
-    */
     start_kernel();
     loop {}
 }
 
 pub fn start_kernel() {
-    long_mode_init::try_long_mode();
+    let mut w = Writer::new();
+    // if the length is >= 16 bytes, the compiler
+    // stops unrolling the cycle and everything somehow breaks
+    w.write_str("0123456789abcdef").unwrap();
 }
 
