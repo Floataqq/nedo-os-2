@@ -1,7 +1,2 @@
 [workspace]
-members = [ 
-  "nedo_os_2",
-  "xtask"
-]
-resolver = "3"
-
+members = ["kernel"]

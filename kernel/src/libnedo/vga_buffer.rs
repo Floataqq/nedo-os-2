@@ -4,6 +4,7 @@
 use core::fmt::Write;
 use core::fmt::Result;
 use core::mem::transmute;
+use core::default::Default;
 use spin::Mutex;
 use lazy_static::lazy_static;
 
@@ -42,6 +43,7 @@ impl Default for ColorInfo {
 }
 
 impl ColorInfo {
+    // TODO: maybe get rid of the transmutes...
     pub fn new() -> Self {
         Self::default()
     }
@@ -151,26 +153,8 @@ impl Write for Writer {
     }
 }
 
-/// A global writer instance for `print` and `println`
 lazy_static! {
+    /// A global writer instance for `print` and `println`
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer::new());
 }
-
-/// just like `print`, but uses the VGA buffer
-#[macro_export]
-macro_rules! vga_print {
-    ($($arg:tt)*) => {
-        use core::fmt::Write;
-        write!(*$crate::vga_buffer::WRITER.lock(), $($arg)*)
-    };
-}
-
-/// just like `println`, but uses the VGA buffer
-#[macro_export]
-macro_rules! vga_println {
-    ($($arg:tt)*) => {
-        vga_print!($($arg)*, "\n")
-    };
-}
-
 

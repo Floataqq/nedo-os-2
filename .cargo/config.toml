@@ -1,2 +1,4 @@
-[alias]
-xtask = "run --package xtask --"
+[unstable]
+build-std = ["core", "compiler_builtins"]
+[target.'cfg(target_os = "none")']
+runner = "bootimage runner"
