@@ -1,6 +1,7 @@
 //! A bit of code for interacting with the VGA text buffer.
 //! For now it is assumed that the buffer is 80 x 25.
 
+use core::fmt;
 use core::fmt::Write;
 use core::fmt::Result;
 use core::mem::transmute;
@@ -130,7 +131,8 @@ impl Writer {
     /// Write a `Character` disregarding the cursor color
     pub fn write_character(&mut self, char: Character) {
         if self.column == BUFFER_WIDTH - 1 || char.char == b'\n' {
-            self.write_newline()
+            self.write_newline();
+            return;
         }
         let addr = VGA_BUFFER_START 
             + (self.line * BUFFER_WIDTH + self.column) * 2;
@@ -156,5 +158,27 @@ impl Write for Writer {
 lazy_static! {
     /// A global writer instance for `print` and `println`
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer::new());
+}
+
+#[macro_export]
+macro_rules! vga_print {
+    ($($arg:tt)*) => (
+        $crate::vga_buffer::_print(format_args!($($arg)*))
+    );
+}
+
+#[macro_export]
+macro_rules! vga_println {
+    () => ($crate::vga_print!("\n"));
+    ($($arg:tt)*) => (
+        $crate::vga_print!("{}\n", format_args!($($arg)*));
+    );
+}
+
+
+#[doc(hidden)]
+pub fn _print(args: fmt::Arguments) {
+    use core::fmt::Write;
+    WRITER.lock().write_fmt(args).unwrap();
 }
 

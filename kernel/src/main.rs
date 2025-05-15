@@ -4,11 +4,12 @@
 use core::fmt::Write;
 use core::panic::PanicInfo;
 use libnedo::vga_buffer::Writer;
+use libnedo::{vga_println, vga_print};
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    let mut w = Writer::new();
-    write!(w, "meowmeowmeowmeow");
+    vga_println!("Hello!");
+    vga_println!("World!");
     loop {}
 }
 
